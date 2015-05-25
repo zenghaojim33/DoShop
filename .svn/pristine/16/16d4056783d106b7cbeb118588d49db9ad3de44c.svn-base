@@ -1,0 +1,85 @@
+//
+//  DSUserInfoModel.m
+//  DoShop
+//
+//  Created by Anson on 15/2/4.
+//  Copyright (c) 2015年 Anson Tsang. All rights reserved.
+//
+
+#import "DSBaseModel.h"
+@implementation DSBaseModel
+
+
++(NSDictionary *)JSONKeyPathsByPropertyKey
+{
+    return nil;
+}
+
+
++(id)init:(NSDictionary *)dict
+{
+    
+    id object = [MTLJSONAdapter modelOfClass:[self class] fromJSONDictionary:dict error:nil];
+    return object;
+    
+}
+
+- (NSDictionary*) JSONDictionary {
+    return [MTLJSONAdapter JSONDictionaryFromModel:self];
+}
+
+
++(void)saveObjectListToCache:(NSArray *)cacheList andKey:(NSString *)key
+{
+    
+    if (key && cacheList)
+    {
+        TMCache * cache = [self getCache];
+        [cache setObject:cacheList forKey:key];
+    }
+    
+}
+
+
++(void)saveObjectToCache:(DSBaseModel *)model andKey:(NSString *)key
+{
+    
+    if (model && key)
+    {
+        TMCache * cache = [self getCache];
+        [cache setObject:model forKey:key];
+    }
+    
+    
+}
+
+
++(NSArray *)cacheListBykey:(NSString *)key
+{
+    if (key)
+    {
+        TMCache * cache  = [self getCache];
+        NSArray * arr = [cache objectForKey:key];
+        return arr;
+    }
+    return nil;
+}
+
++(DSBaseModel *)cacheObjectByKey:(NSString *)key
+{
+    if (key)
+    {
+        TMCache * cache = [self getCache];
+        DSBaseModel * model = [cache objectForKey:key];
+        return model;
+    }
+    return nil;
+}
+
++ (TMCache*) getCache {
+    return [[TMCache alloc] initWithName:NSStringFromClass(self)];
+}
+
+
+
+@end

@@ -1,0 +1,165 @@
+//
+//  ReturnInfoViewController.m
+//  DoShop
+//
+//  Created by Anson on 15/3/23.
+//  Copyright (c) 2015年 Anson Tsang. All rights reserved.
+//
+
+#import "ReturnInfoViewController.h"
+#import "OrderInfoTableViewCell.h"
+#import "ReturnDetailViewController.h"
+@interface ReturnInfoViewController ()<UITableViewDelegate,UITableViewDataSource>
+@property (weak, nonatomic) IBOutlet UITableView *returnOrderTableView;
+@property (weak, nonatomic) IBOutlet UILabel *orderNo;
+@property (weak, nonatomic) IBOutlet UILabel *buyer;
+@property (weak, nonatomic) IBOutlet UILabel *createTime;
+@property (weak, nonatomic) IBOutlet UILabel *payTime;
+@property (weak, nonatomic) IBOutlet UILabel *reason;
+@property (weak, nonatomic) IBOutlet UILabel *backTime;
+@property (weak, nonatomic) IBOutlet UILabel *price;
+@property (weak, nonatomic) IBOutlet UILabel *linkman;
+@property (weak, nonatomic) IBOutlet UILabel *phone;
+@property (weak, nonatomic) IBOutlet UILabel *address;
+@property (weak, nonatomic) IBOutlet UILabel *statu;
+@property (nonatomic,strong)NSNumber * backType;
+@end
+static NSString * cellIdentifier = @"returnCell";
+
+
+
+typedef NS_ENUM(NSInteger, OrderType){
+    
+    ApplyForReturn = 4,
+    Agree  = 5,
+    InReturn = 6,
+    NotAgree = 7,
+    Success = 8,
+    
+};
+
+@implementation ReturnInfoViewController{
+    
+    NSMutableArray * _returnInfoArray;
+    
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+    self.title = @"订单详情";
+    
+    
+    
+    _returnInfoArray = [[NSMutableArray alloc]init];
+    [HTTPRequestManager getURL:[NSString stringWithFormat:GET_BACKLISTINFO_API,self.backid] andParameter:nil onCompletion:^(NSDictionary *dict, NSError *error) {
+        
+        
+        
+        [_returnInfoArray addObjectsFromArray:dict[@"result"]];
+        dispatch_async(dispatch_get_main_queue(), ^{
+           
+            self.orderNo.text = _returnInfoArray[0][@"orderNo"];
+            self.buyer.text = _returnInfoArray[0][@"buyer"];
+            self.createTime.text = _returnInfoArray[0][@"createTime"];
+            self.payTime.text = _returnInfoArray[0][@"payTime"];
+            NSInteger  orderType =((NSNumber*)_returnInfoArray[0][@"statu"]).integerValue;
+            
+            switch (orderType) {
+                    case ApplyForReturn:
+                    self.statu.text = @"申请退货中";
+                    break;
+                    case Agree:
+                    self.statu.text = @"同意退货";
+                    break;
+                    case InReturn   :
+                    self.statu.text = @"退货中";
+                    break;
+                    case NotAgree :
+                    self.statu.text = @"不同意退货";
+                    break;
+                    case Success:
+                    self.statu.text = @"退货成功";
+                    break;
+
+                default:
+                    break;
+            }
+            
+            self.reason.text = _returnInfoArray[0][@"reason"];
+            self.backTime.text = _returnInfoArray[0][@"backTime"];
+            self.price.text = ((NSNumber*)_returnInfoArray[0][@"price"]).stringValue;
+            self.linkman.text =_returnInfoArray[0][@"linkman"];
+            self.phone.text = _returnInfoArray[0][@"phone"];
+            self.address.text = _returnInfoArray[0][@"address"];
+            self.backType = _returnInfoArray[0][@"backType"];
+            [self.returnOrderTableView reloadData];
+        });
+    }];
+    
+    
+    
+    
+}
+
+
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+    
+}
+
+-(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    OrderInfoTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    
+    NSString * productName = _returnInfoArray[0][@"productName"];
+    NSString * productImg = [NSString stringWithFormat:@"%@%@",BASE_URL,_returnInfoArray[0][@"productImg"]];
+    NSString * size = _returnInfoArray[0][@"size"];
+    NSNumber * productId = _returnInfoArray[0][@"productId"];
+    NSNumber * price = _returnInfoArray[0][@"price"];
+    NSNumber * number = _returnInfoArray[0][@"number"];
+    NSNumber * allPrice = _returnInfoArray[0][@"allprice"];
+    cell.productName.text = productName;
+    cell.productId = productId;
+    cell.productDetail.text = size;
+    cell.productPrice.text = [NSString stringWithFormat:@"￥%@x%@=￥%@",price,number,allPrice];
+    [cell.productImageView sd_setImageWithURL:[NSURL URLWithString:productImg] placeholderImage:nil];
+    
+    
+    return cell;
+}
+
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return _returnInfoArray.count;
+}
+
+- (IBAction)returnDetailButtonClicked:(id)sender {
+    
+    ReturnDetailViewController * vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ReturnDetailViewController"];
+    vc.backid = self.backid;
+    vc.backType = self.backType;
+    vc.reason = self.reason.text;
+    vc.thimgUrl = _returnInfoArray[0][@"thimg"];
+    vc.detailId = _returnInfoArray[0][@"detailId"];
+    [self.navigationController pushViewController:vc animated:YES];
+    
+    
+    
+    
+}
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+@end

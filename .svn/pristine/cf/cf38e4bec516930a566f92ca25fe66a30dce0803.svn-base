@@ -1,0 +1,97 @@
+//
+//  MessageViewController.m
+//  Dome
+//
+//  Created by BTW on 14/12/22.
+//  Copyright (c) 2014年 jenk. All rights reserved.
+//
+
+#import "MessageViewController.h"
+#import "MessageTableViewCell.h"
+#import "MessageInfoViewController.h"
+@interface MessageViewController ()
+<
+UITableViewDataSource,
+UITableViewDelegate
+>
+
+@property (weak, nonatomic) IBOutlet UITableView *MyTableView;
+
+@end
+
+@implementation MessageViewController
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    
+    self.title = @"消息";
+    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] init];
+    backItem.title = @"";
+    
+    self.navigationItem.backBarButtonItem = backItem;
+    
+}
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.MyTableView.delegate = self;
+    self.MyTableView.dataSource = self;
+    [self.MyTableView registerNib:[UINib nibWithNibName:@"MessageTableViewCell" bundle:nil] forCellReuseIdentifier:@"Cell"];
+    [self.MyTableView reloadData];
+    // Do any additional setup after loading the view.
+}
+#pragma mark - Table view data source
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return 1;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+    
+    
+    static NSString *CellIdentifier = @"Cell" ;
+    
+    
+    MessageTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    cell.selectionStyle = UITableViewCellAccessoryNone;
+    cell.layer.shadowColor = [UIColor blackColor].CGColor;
+    cell.layer.shadowOffset = CGSizeMake(1, 1);
+    cell.layer.shadowOpacity = 0.2;
+    return cell;
+}
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 300;
+}
+#pragma mark - Table view delegate
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSLog(@"Touch %ld",(long)indexPath.row);
+    MessageInfoViewController * vc = [self.storyboard instantiateViewControllerWithIdentifier:@"MessageInfoViewController"];
+    vc.title = @"消息详情";
+    [self.navigationController pushViewController:vc animated:YES];
+}
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+@end

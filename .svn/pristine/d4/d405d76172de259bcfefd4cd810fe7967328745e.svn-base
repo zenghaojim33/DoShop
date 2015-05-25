@@ -1,0 +1,30 @@
+//
+//  RushOrdersInfoTableViewCell.h
+//  Dome
+//
+//  Created by BTW on 14/12/23.
+//  Copyright (c) 2014年 jenk. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+@protocol OrderTableViewCellDelegate <NSObject>
+
+-(void)sendMyGoodWithOrderID:(NSNumber*)productid;
+
+@end
+
+
+
+@interface RushOrdersInfoTableViewCell : UITableViewCell
+@property (weak, nonatomic) IBOutlet UIImageView *OrdersImageView;
+@property (weak, nonatomic) IBOutlet UILabel *OrdersTitle;
+@property (weak, nonatomic) IBOutlet UILabel *OrdersLabel;
+@property (weak, nonatomic) IBOutlet UILabel *OrdersLastTime;
+@property (weak, nonatomic) IBOutlet UILabel *OrdersPrice;
+@property(nonatomic,strong)NSNumber * orderId;
+@property(nonatomic,strong)NSString * orderNo;
+@property(nonatomic,weak)id <OrderTableViewCellDelegate>delegate;
+@property (weak, nonatomic) IBOutlet UIButton *sendProductButton;
+
+
+@end

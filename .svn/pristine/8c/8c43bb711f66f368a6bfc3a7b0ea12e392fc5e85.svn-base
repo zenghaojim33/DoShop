@@ -1,0 +1,60 @@
+//
+//  ChangeInfoViewController.m
+//  DoShop
+//
+//  Created by Anson on 15/4/21.
+//  Copyright (c) 2015年 Anson Tsang. All rights reserved.
+//
+
+#import "ChangeInfoViewController.h"
+#import "DSUserInfoModel.h"
+#import "CNCityPickerView.h"
+@interface ChangeInfoViewController()
+
+
+@property (weak, nonatomic) IBOutlet UIImageView *myAvatar;
+@property (weak, nonatomic) IBOutlet UITextField *myNameTextField;
+@property (weak, nonatomic) IBOutlet UILabel *myPhoneTextField;
+@property (weak, nonatomic) IBOutlet UITextField *myAddressTextField;
+@property (weak, nonatomic) IBOutlet UITextField *myEmailTextField;
+@property (weak, nonatomic) IBOutlet UITextField *myAccountNameTextField;
+@property (weak, nonatomic) IBOutlet UITextField *myBankTextField;
+@property (weak, nonatomic) IBOutlet UITextField *myBankNumTextField;
+@property (weak, nonatomic) IBOutlet UIButton *selectAddressBtn;
+@property (weak, nonatomic) IBOutlet UIButton *selectBankBtn;
+@property (weak, nonatomic) IBOutlet CNCityPickerView *pickerView;
+
+@end
+@implementation ChangeInfoViewController{
+    
+    
+    DSUserInfoModel * _userInfoModel;
+}
+
+
+-(void)viewDidLoad{
+    
+    
+    NSString * FirstLogin = [[NSUserDefaults standardUserDefaults]objectForKey:@"FirstLogin"];
+    
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"BankCode" ofType:@"json"];
+    NSData *data = [NSData dataWithContentsOfFile:filePath];
+    NSArray *json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+    [self.pickerView setValueChangedCallback:^(NSString *province, NSString *city, NSString *area) {
+        NSLog(@"%@%@%@",province,city,area);
+    }];
+    
+}
+
+- (IBAction)selectAddress:(id)sender {
+    
+    
+    
+    
+    
+    
+}
+- (IBAction)selectBank:(id)sender {
+}
+
+@end

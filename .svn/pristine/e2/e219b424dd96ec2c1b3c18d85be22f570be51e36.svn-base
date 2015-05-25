@@ -1,0 +1,218 @@
+//
+//  CommodityViewController.m
+//  Dome
+//
+//  Created by BTW on 14/12/23.
+//  Copyright (c) 2014年 jenk. All rights reserved.
+//
+
+#import "CommodityViewController.h"
+#import "CommodityTableViewCell.h"
+
+
+#import "FSLineChart.h"
+#import "UIColor+FSPalette.h"
+#define WS(weakSelf)  __weak __typeof(&*self)weakSelf = self;
+@interface CommodityViewController ()
+<
+UITableViewDataSource,
+UITableViewDelegate
+>
+
+@property (weak, nonatomic) IBOutlet UIButton *Button1;
+@property (weak, nonatomic) IBOutlet UIButton *Button2;
+@property (weak, nonatomic) IBOutlet UIButton *Button3;
+@property (weak, nonatomic) IBOutlet UITableView *MyTableView;
+@property (weak, nonatomic) IBOutlet UIView *LineView;
+@property (strong,nonatomic)FSLineChart* lineChart;
+@property(nonatomic,strong) NSMutableArray * currentArray;
+
+
+
+
+@end
+
+@implementation CommodityViewController
+{
+    NSInteger index;
+    NSMutableArray * _everydayOrderArray;
+    NSMutableArray * _everydaySalesArray;
+    NSMutableArray * _everydayVisitorArray;
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    
+    self.title = @"销售管理";
+    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] init];
+    backItem.title = @"";
+    
+    self.navigationItem.backBarButtonItem = backItem;
+    
+}
+- (IBAction)TouchButton:(UIButton *)sender
+{
+
+    [self.Button1 setBackgroundColor:[UIColor whiteColor]];
+    [self.Button1 setTitleColor:[UIColor scrollViewTexturedBackgroundColor] forState:UIControlStateNormal];
+    
+    [self.Button2 setBackgroundColor:[UIColor whiteColor]];
+    [self.Button2 setTitleColor:[UIColor scrollViewTexturedBackgroundColor] forState:UIControlStateNormal];
+    
+    [self.Button3 setBackgroundColor:[UIColor whiteColor]];
+    [self.Button3 setTitleColor:[UIColor scrollViewTexturedBackgroundColor] forState:UIControlStateNormal];
+    
+    [sender setBackgroundColor:[UIColor colorWithRed:227/255.0 green:116/255.0 blue:110/255.0 alpha:1]];
+    [sender setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    
+    
+    index =  sender.tag;
+    
+    
+    
+    
+    [self.MyTableView reloadData];
+}
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+      index = 1;
+    
+    
+    _everydayOrderArray = [[NSMutableArray alloc]init];
+    _everydaySalesArray = [[NSMutableArray alloc]init];
+    _everydayVisitorArray = [[NSMutableArray alloc]init];
+
+    
+    [HTTPRequestManager getURL:GET_EVERYDAY_ORDER_NUM_API andParameter:nil onCompletion:^(NSDictionary *dict, NSError *error) {
+        
+        
+        _everydayOrderArray = [dict[@"result"] mutableCopy];
+        _currentArray = _everydayOrderArray;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [_MyTableView reloadData];
+            [self lineChartReloadData];
+        });
+        
+        
+        
+    }];
+    
+    
+    
+    self.MyTableView.delegate = self;
+    self.MyTableView.dataSource = self;
+    [self.MyTableView registerNib:[UINib nibWithNibName:@"CommodityTableViewCell" bundle:nil] forCellReuseIdentifier:@"Cell"];
+
+    
+
+    
+    [self InItLineChart];
+
+  
+
+}
+- (void)InItLineChart
+{
+    NSMutableArray* chartData = [NSMutableArray arrayWithCapacity:10];
+    
+    for(int i=0;i<10;i++) {
+        chartData[i] = [NSNumber numberWithInt:rand() % 100];
+    }
+  
+    
+
+    self.lineChart = [[FSLineChart alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width-32, self.LineView.frame.size.height)];
+    
+
+
+    [self.LineView addSubview:self.lineChart];
+
+}
+
+
+#pragma mark -------图标刷新数据
+-(void)lineChartReloadData
+{
+    __weak typeof(self) weakSelf = self;
+    self.lineChart.displayDataPoint=YES;
+    self.lineChart.verticalGridStep = 5;
+    self.lineChart.horizontalGridStep =5;
+    self.lineChart.labelForIndex = ^(NSUInteger item){
+        
+        return weakSelf.currentArray[item][@"date"];
+    };
+    
+    self.lineChart.labelForValue = ^(CGFloat value) {
+        return [NSString stringWithFormat:@"%.02f €", powf(10,value)];
+    };
+    
+    NSMutableArray * chartDataArray = [[NSMutableArray alloc]init];
+    for(NSInteger i = 0;i<self.currentArray.count;i++)
+    {
+        [chartDataArray addObject:self.currentArray[i][@"sum"]];
+    }
+    [self.lineChart clearChartData];
+    [self.lineChart setChartData:chartDataArray];
+
+}
+
+
+
+
+#pragma mark - Table view data source
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return _currentArray.count;
+}
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+    
+    
+    static NSString *CellIdentifier = @"Cell" ;
+    
+    
+    CommodityTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    
+    NSDictionary * infoDict = _currentArray[indexPath.row];
+    cell.date.text = infoDict[@"date"];
+    NSString * sum = ((NSNumber*)infoDict[@"sum"]).stringValue;
+    cell.number.text = sum;
+    
+    cell.selectionStyle = UITableViewCellAccessoryNone;
+
+    
+    return cell;
+}
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 42;
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+@end

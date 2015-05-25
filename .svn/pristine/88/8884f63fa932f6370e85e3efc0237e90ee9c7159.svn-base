@@ -1,0 +1,207 @@
+//
+//  CustomerViewController.m
+//  Dome
+//
+//  Created by BTW on 14/12/23.
+//  Copyright (c) 2014年 jenk. All rights reserved.
+//
+
+#import "CustomerViewController.h"
+#import "CustomerTableViewCell.h"
+#import "CustomerInfoViewController.h"
+#import <MJRefresh.h>
+@interface CustomerViewController ()
+<
+UITableViewDataSource,
+UITableViewDelegate
+>
+
+
+@property (weak, nonatomic) IBOutlet UITableView *MyTableView;
+@property (weak, nonatomic) IBOutlet UITextField *MyTextField;
+
+@end
+
+static NSString *CellIdentifier = @"customerCell";
+
+@implementation CustomerViewController
+
+{
+    
+    NSMutableArray * _customerArray;
+    NSInteger _page;
+    
+}
+
+
+
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    
+    self.title = @"客户管理";
+    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] init];
+    backItem.title = @"";
+    
+    self.navigationItem.backBarButtonItem = backItem;
+    
+}
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+    _page=1;
+    self.MyTableView.delegate = self;
+    self.MyTableView.dataSource = self;
+    [self.MyTableView registerNib:[UINib nibWithNibName:@"CustomerTableViewCell" bundle:nil] forCellReuseIdentifier:@"customerCell"];
+    [self.MyTableView addHeaderWithTarget:self action:@selector(headerRefresh)];
+    [self.MyTableView addFooterWithTarget:self action:@selector(footerRefresh)];
+    self.MyTableView.tableFooterView = [[UIView alloc]init];
+    
+    _customerArray = [[NSMutableArray alloc]init];
+    NSString * userid = [[NSUserDefaults standardUserDefaults]objectForKey:@"userid"];
+    [HTTPRequestManager getURL:[NSString stringWithFormat:CUSTOMER_MANAGEMENT_API,userid,_page] andParameter:nil onCompletion:^(NSDictionary *dict, NSError *error) {
+       
+        
+        _customerArray = [dict[@"result"] mutableCopy];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [_MyTableView reloadData];
+        });
+        
+    }];
+
+
+}
+#pragma mark - Table view data source
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return _customerArray.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+    
+    
+    
+    
+    CustomerTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    cell.selectionStyle = UITableViewCellAccessoryNone;
+
+    
+    cell.layer.shadowColor = [UIColor blackColor].CGColor;
+    cell.layer.shadowOffset = CGSizeMake(1, 1);
+    cell.layer.shadowOpacity = 0.2;
+    
+    NSDictionary * infoDict = _customerArray[indexPath.row];
+    cell.customerName.text = infoDict[@"name"];
+    NSString * imageUrl = [NSString stringWithFormat:@"%@%@",BASE_URL,infoDict[@"imgUrl"]];
+    [cell.customerImageView sd_setImageWithURL:[NSURL URLWithString:imageUrl] placeholderImage:nil];
+    cell.totlaConsumption.text = infoDict[@"turnover"];
+    cell.buyerid = infoDict[@"buyerid"];
+
+    return cell;
+}
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 100;
+}
+#pragma mark - Table view delegate
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+    
+    
+    
+    NSLog(@"Touch %ld",(long)indexPath.row);
+    CustomerInfoViewController * vc = [self.storyboard instantiateViewControllerWithIdentifier:@"CustomerInfoViewController"];
+    CustomerTableViewCell * cell = (CustomerTableViewCell*)[tableView cellForRowAtIndexPath:indexPath];
+    
+    vc.customerNameString = cell.customerName.text;
+    vc.lastOrderString = cell.customerTime.text;
+    vc.totlaConsumptionString = cell.totlaConsumption.text;
+    vc.buyerid = cell.buyerid;
+    NSLog(@"%@",cell.customerTime.text);
+    [self.navigationController pushViewController:vc animated:YES];
+
+
+}
+
+
+#pragma mark --------MJRefresh----------
+
+
+
+-(void)headerRefresh
+{
+    
+    _page=1;
+    NSString * userid = [[NSUserDefaults standardUserDefaults]objectForKey:@"userid"];
+    [HTTPRequestManager getURL:[NSString stringWithFormat:CUSTOMER_MANAGEMENT_API,userid,_page] andParameter:nil onCompletion:^(NSDictionary *dict, NSError *error) {
+        
+        
+        [_customerArray removeAllObjects];
+        [_customerArray addObjectsFromArray:dict[@"result"]];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [_MyTableView reloadData];
+            [_MyTableView headerEndRefreshing];
+        });
+        
+    }];
+    
+    
+}
+
+
+
+
+
+-(void)footerRefresh
+{
+    
+    _page++;
+    NSString * userid = [[NSUserDefaults standardUserDefaults]objectForKey:@"userid"];
+    [HTTPRequestManager getURL:[NSString stringWithFormat:CUSTOMER_MANAGEMENT_API,userid,_page] andParameter:nil onCompletion:^(NSDictionary *dict, NSError *error) {
+        
+        
+        [_customerArray addObjectsFromArray:dict[@"result"]];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [_MyTableView reloadData];
+            [_MyTableView footerEndRefreshing];
+
+        });
+        
+    }];
+    
+    
+    
+}
+
+
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+@end

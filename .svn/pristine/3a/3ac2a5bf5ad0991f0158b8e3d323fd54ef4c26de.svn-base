@@ -1,0 +1,149 @@
+//
+//  ProvinceViewController.m
+//  DoShop
+//
+//  Created by Anson on 15/3/10.
+//  Copyright (c) 2015年 Anson Tsang. All rights reserved.
+//
+
+#import "ProvinceViewController.h"
+#import "ProvinceCollectionViewCell.h"
+#import "NSString+MyContainsString.h"
+@interface ProvinceViewController ()<UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout>
+@property (weak, nonatomic) IBOutlet UICollectionView *provinceCollectionView;
+
+@end
+static NSString * cellIdentifier = @"Province";
+@implementation ProvinceViewController{
+    
+    
+    NSArray * _provinceArray;
+    NSArray * _invalidatedArray; //用于保存无法选中的cell
+    
+}
+
+
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+    NSLog(@"%@",self.province);
+    
+    
+    if (self.changeInfo)
+    {
+        [self invalidateParticularCells];
+    }
+    
+    self.provinceCollectionView.allowsMultipleSelection=YES;
+    NSString * path = [[NSBundle mainBundle]pathForResource:@"ProvinceList" ofType:@"plist"];
+    _provinceArray = [[NSArray alloc]initWithContentsOfFile:path];
+    
+    
+    
+}
+
+#pragma mark ------------使部分Cell无效化------------
+-(void)invalidateParticularCells
+{
+    
+    if ([self.province myContainsString:@","])
+    {
+        _invalidatedArray = [self.province componentsSeparatedByString:@","];
+    }else{
+        _invalidatedArray = @[self.province];
+        
+    }
+    
+    
+
+    
+}
+
+
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+
+-(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    
+    return _provinceArray.count;
+    
+    
+}
+
+
+
+-(UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+    ProvinceCollectionViewCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
+
+    
+
+    cell.provinceLabel.text = _provinceArray[indexPath.row];
+    
+    
+    return cell;
+    
+    
+    
+}
+
+-(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
+{
+    return 1;
+}
+
+
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+}
+
+
+
+
+
+-(void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSString * indexPathString = [NSString stringWithFormat:@"%ld",indexPath.row+1];
+
+    if (self.changeInfo)
+    {
+        BOOL found = CFArrayContainsValue ( (__bridge CFArrayRef)_invalidatedArray,
+                                           CFRangeMake(0, _invalidatedArray.count),
+                                           (CFStringRef)indexPathString ) ;
+        
+        if (found)
+        {
+            
+            //indexpath存在于数组里就要将它选中
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.provinceCollectionView selectItemAtIndexPath:indexPath animated:YES scrollPosition:UICollectionViewScrollPositionNone];
+            });
+        }
+    }
+    
+    
+
+}
+
+
+
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+@end

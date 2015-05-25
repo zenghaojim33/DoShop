@@ -1,0 +1,172 @@
+//
+//  SortGoodViewController.m
+//  DoShop
+//
+//  Created by Anson on 15/2/15.
+//  Copyright (c) 2015年 Anson Tsang. All rights reserved.
+//
+
+#import "SortGoodViewController.h"
+#import "SupplierTableViewCell.h"
+#import "SectionView.h"
+#import "SectionInfoModel.h"
+#import "STCollapseTableView.h"
+@interface SortGoodViewController ()<UITableViewDelegate,UITableViewDataSource,UITableSectionHeaderViewDelegate>
+@property (weak, nonatomic) IBOutlet STCollapseTableView *supplierTableView;
+
+@end
+#define SECTION_HEIGHT 48
+static NSString * cellIdentifier = @"suppliercell";
+@implementation SortGoodViewController{
+    
+    NSMutableArray * _sectionInfoArray;
+    NSMutableArray * supplierArray;
+    NSMutableArray * categoryArray;
+    
+    
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+    
+    UINib * sectionNib = [UINib nibWithNibName:@"SectionView" bundle:nil];
+    [self.supplierTableView registerNib:sectionNib forHeaderFooterViewReuseIdentifier:@"SectionView"];
+    
+    self.supplierTableView.sectionFooterHeight = SECTION_HEIGHT;
+    _sectionInfoArray = [[NSMutableArray alloc]init];
+    
+    NSArray * titleArray = @[@"类别",@"品牌"];
+    for (NSInteger i=0;i<2;i++)
+    {
+        SectionInfoModel * model =[[SectionInfoModel alloc]init];
+        model.sectiontitle = titleArray[i];
+        model.fold=NO;
+        [_sectionInfoArray addObject:model];
+    }
+    
+    [self.supplierTableView reloadData];
+
+    [self.supplierTableView openSection:0 animated:NO];
+    [self.supplierTableView setExclusiveSections:NO];
+    self.supplierTableView.tableFooterView = [[UIView alloc]initWithFrame:CGRectZero];
+    
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+
+#pragma mark -----UITableViewDelegate-----
+
+
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 2;
+}
+
+
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    
+    return 5;
+    
+
+}
+
+
+
+-(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+    
+    SupplierTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    return cell;
+    
+    
+}
+
+
+-(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    
+    
+    SectionView * sectionView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"SectionView"];
+    sectionView.delegate = self;
+    sectionView.section = section;
+    sectionView.sectionTitle.text =((SectionInfoModel*) _sectionInfoArray[section]).sectiontitle;
+    
+    return sectionView;
+    
+}
+
+
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    
+    
+    return 48.0f;
+    
+    
+}
+
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+    
+    
+    
+    
+}
+
+
+#pragma mark UITableSectionHeaderViewDelegate
+
+
+-(void)sectionHeaderView:(SectionView *)sectionView sectionClosed:(NSInteger)section
+{
+    
+    
+    SectionInfoModel * model = _sectionInfoArray[section];
+    model.fold = YES;
+    [_sectionInfoArray replaceObjectAtIndex:section withObject:model];
+    
+    
+    NSIndexSet * indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(section, 1)];
+    [self.supplierTableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationBottom];
+    
+}
+
+
+
+
+-(void)sectionHeaderView:(SectionView *)sectionView sectionOpened:(NSInteger)section
+{
+    
+    
+    SectionInfoModel * model = _sectionInfoArray[section];
+    model.fold=NO;
+    [_sectionInfoArray replaceObjectAtIndex:section withObject:model];
+    NSIndexSet * indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(section, 1)];
+    [self.supplierTableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationBottom];
+
+    
+    
+}
+
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+@end

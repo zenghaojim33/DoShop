@@ -1,0 +1,105 @@
+//
+//  CustomerViewController.m
+//  Dome
+//
+//  Created by BTW on 14/12/23.
+//  Copyright (c) 2014年 jenk. All rights reserved.
+//
+
+#import "CustomerViewController.h"
+#import "CustomerTableViewCell.h"
+#import "CustomerInfoViewController.h"
+@interface CustomerViewController ()
+<
+UITableViewDataSource,
+UITableViewDelegate
+>
+
+
+@property (weak, nonatomic) IBOutlet UITableView *MyTableView;
+@property (weak, nonatomic) IBOutlet UITextField *MyTextField;
+
+@end
+
+@implementation CustomerViewController
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    
+    self.title = @"客户管理";
+    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] init];
+    backItem.title = @"";
+    
+    self.navigationItem.backBarButtonItem = backItem;
+    
+}
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+    
+    self.MyTableView.delegate = self;
+    self.MyTableView.dataSource = self;
+    [self.MyTableView registerNib:[UINib nibWithNibName:@"CustomerTableViewCell" bundle:nil] forCellReuseIdentifier:@"Cell"];
+    [self.MyTableView reloadData];
+}
+#pragma mark - Table view data source
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return 1;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+    
+    
+    static NSString *CellIdentifier = @"Cell" ;
+    
+    
+    CustomerTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    cell.layer.shadowColor = [UIColor blackColor].CGColor;
+    cell.layer.shadowOffset = CGSizeMake(1, 1);
+    cell.layer.shadowOpacity = 0.2;
+    
+    cell.selectionStyle = UITableViewCellAccessoryNone;
+//    cell.layer.shadowColor = [UIColor blackColor].CGColor;
+//    cell.layer.shadowOffset = CGSizeMake(1, 1);
+//    cell.layer.shadowOpacity = 0.2;
+    return cell;
+}
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 100;
+}
+#pragma mark - Table view delegate
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSLog(@"Touch %ld",(long)indexPath.row);
+    CustomerInfoViewController * vc = [self.storyboard instantiateViewControllerWithIdentifier:@"CustomerInfoViewController"];
+    vc.title = self.title;
+    [self.navigationController pushViewController:vc animated:YES];
+
+}
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+@end

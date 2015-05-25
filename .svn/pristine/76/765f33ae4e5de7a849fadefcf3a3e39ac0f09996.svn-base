@@ -1,0 +1,33 @@
+//
+//  API&Key.h
+//  DoShop
+//
+//  Created by Anson on 15/2/4.
+//  Copyright (c) 2015年 Anson Tsang. All rights reserved.
+//
+
+#ifndef DoShop_API_Key_h
+#define DoShop_API_Key_h
+
+
+#define UMAppKey @"54a350bffd98c51f0900012d"
+
+#define BASE_URL @"http://dudian.beautyway.com.cn"
+
+#define LOGIN_API @"http://dudian.beautyway.com.cn/json/client/index.ashx?aim=login"
+
+
+#define CHANGE_INFO_API @"http://dudian.beautyway.com.cn/json/client/index.ashx?aim=updatemyinfor"
+
+#define GET_PRODUCT_API @"http://dudian.beautyway.com.cn/json/client/product.ashx?aim= productlist"
+
+#define GET_INFO_API @"http://dudian.beautyway.com.cn/json/client/index.ashx?aim=getinfor"
+
+
+#define GET_BRAND_API @"http://dudian.beautyway.com.cn/json/client/product.ashx?aim=getbrand"
+
+#define SCAN_API @"http://dudian.beautyway.com.cn/json/client/index.ashx?aim=bindsupplier"
+
+#define CONFIRM_ON_SALE_API @"http://dudian.beautyway.com.cn/json/client/product.ashx?aim=selectproduct"
+
+#endif

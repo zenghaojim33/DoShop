@@ -1,0 +1,16 @@
+//
+//  API&Key.h
+//  DoShop
+//
+//  Created by Anson on 15/2/4.
+//  Copyright (c) 2015年 Anson Tsang. All rights reserved.
+//
+
+#ifndef DoShop_API_Key_h
+#define DoShop_API_Key_h
+
+
+#define UMAppKey @"54a350bffd98c51f0900012d"
+
+
+#endif

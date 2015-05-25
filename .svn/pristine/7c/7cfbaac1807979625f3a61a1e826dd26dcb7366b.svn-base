@@ -1,0 +1,136 @@
+//
+//  PostageViewController.m
+//  DoShop
+//
+//  Created by Anson on 15/3/10.
+//  Copyright (c) 2015年 Anson Tsang. All rights reserved.
+//
+
+#import "PostageViewController.h"
+#import "PostageTableViewCell.h"
+#import "ProvinceViewController.h"
+@interface PostageViewController ()<UITableViewDataSource,UITableViewDelegate>
+@property (weak, nonatomic) IBOutlet UITableView *postageTableView;
+@property (weak, nonatomic) IBOutlet UITextField *priceLabel;
+@property (weak, nonatomic) IBOutlet UIButton *allInclusionBtn;
+@property (weak, nonatomic) IBOutlet UIButton *limitedinclusionBtn;
+@property(nonatomic)NSInteger expressionType;
+
+@end
+
+static NSString * cellIdentifier = @"Postage";
+@implementation PostageViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+    self.expressionType = 1;
+}
+
+
+#pragma mark -------UITableViewDelegate------
+
+
+-(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+    PostageTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    
+    if (indexPath.row%2==0)
+    {
+        cell.provinceList.text = @"广东广东广东广东广东广东广东广东广东广东广东广东广东广东";
+    }else{
+        cell.provinceList.text = @"广东";
+    }
+    
+    return cell;
+    
+   
+    
+}
+
+
+
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    
+    
+    return 5;
+}
+
+
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static PostageTableViewCell * cell;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+        
+    });
+    if (indexPath.row%2==0)
+    {
+        cell.provinceList.text = @"广东广东广东广东广东广东广东广东广东广东广东广东广东广东";
+    }else{
+        cell.provinceList.text = @"广东";
+    }
+    
+    [cell setNeedsLayout];
+    [cell layoutIfNeeded];
+    CGFloat height = [cell.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
+
+    return height+1.0f;
+    
+    
+}
+
+
+#pragma mark ------------UI
+
+- (IBAction)selectExpressType:(id)sender {
+    
+    
+    UIButton * btn = sender;
+    if (btn.tag==999)
+    {
+        [btn setBackgroundImage:[UIImage imageNamed:@"checked_button"] forState:UIControlStateNormal];
+        [self.limitedinclusionBtn setBackgroundImage:[UIImage imageNamed:@"uncheck_button"] forState:UIControlStateNormal];
+        self.expressionType = 1;
+        
+    }else if (btn.tag==1000)
+    {
+        [btn setBackgroundImage:[UIImage imageNamed:@"checked_button"] forState:UIControlStateNormal];
+        [self.allInclusionBtn setBackgroundImage:[UIImage imageNamed:@"uncheck_button"] forState:UIControlStateNormal];
+        self.expressionType = 2;
+    }
+    
+    
+}
+
+- (IBAction)addExpressType:(id)sender {
+    
+    ProvinceViewController * vc = [self.storyboard instantiateViewControllerWithIdentifier:@"Province"];
+    [self.navigationController pushViewController:vc animated:YES];
+    
+
+    
+}
+
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+@end

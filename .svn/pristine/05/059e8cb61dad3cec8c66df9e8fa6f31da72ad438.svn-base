@@ -1,0 +1,478 @@
+//
+//  OrderViewController.m
+//  Dome
+//
+//  Created by BTW on 14/12/23.
+//  Copyright (c) 2014年 jenk. All rights reserved.
+//
+
+#import "OrderViewController.h"
+#import "StartTimeViewController.h"
+#import "EndTimeViewController.h"
+#import "RushOrdersInfoTableViewCell.h"
+#import "OrderInfoViewController.h"
+#import <MJRefresh.h>
+
+
+@interface OrderViewController ()
+<
+    StartimeDelegate,
+    EndTimeDelegate,
+    UITableViewDataSource,
+    UITableViewDelegate,
+    OrderTableViewCellDelegate
+>
+{
+    NSString * userid;
+    NSString * selectStartTime;
+    NSString * selectEndTime;
+    NSString * type;
+    NSMutableArray * _presellArray;
+    NSMutableArray * _completedArray;
+    NSMutableArray * _closedArray;
+    NSMutableArray * _waitForAcceptanceArray;
+    NSMutableArray * _waitForSendArray;
+    NSMutableArray * _currentArray;
+    NSInteger _page;
+    
+    
+}
+@property (strong, nonatomic) IBOutlet UITextField *myTextField;
+@property (strong, nonatomic) UIButton *DateEndBth;
+@property (strong, nonatomic) UIButton *DateBth;
+@property (weak, nonatomic) IBOutlet UIView *DateButtonBGView;
+
+@property (weak, nonatomic) IBOutlet UIView *ButtonBGView;
+
+@property (strong, nonatomic) UIButton *selectButton1;
+@property (strong, nonatomic) UIButton *selectButton2;
+@property (strong, nonatomic) UIButton *selectButton3;
+@property (strong, nonatomic) UIButton *selectButton4;
+@property (strong, nonatomic) UIButton *selectButton5;
+@property(nonatomic,strong)NSMutableArray *ButtonArray;
+@property (weak, nonatomic) IBOutlet UITableView *MyTableView;
+@end
+
+@implementation OrderViewController
+- (IBAction)TFExit:(UITextField *)sender
+{
+    [self.myTextField resignFirstResponder];
+}
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    
+    self.title = @"订单查询";
+    UIBarButtonItem *backItem = [[UIBarButtonItem alloc] init];
+    backItem.title = @"";
+    
+    self.navigationItem.backBarButtonItem = backItem;
+    
+
+    [self.myTextField resignFirstResponder];
+    
+    
+}
+-(void)initDateButton
+{
+    self.DateBth = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width/2-1, 40)];
+    [self.DateBth setTitle:@"请选择开始日期" forState:UIControlStateNormal];
+    [self.DateBth setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [self.DateBth setBackgroundColor:[UIColor whiteColor]];
+    [self.DateBth addTarget:self action:@selector(TouchData:) forControlEvents:UIControlEventTouchUpInside];
+     self.DateBth.titleLabel.font = [UIFont systemFontOfSize:15];
+    [self.DateButtonBGView addSubview:self.DateBth];
+    
+    self.DateEndBth = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width/2, 0, self.view.frame.size.width/2, 40)];
+    [self.DateEndBth setTitle:@"请选择结束日期" forState:UIControlStateNormal];
+    [self.DateEndBth setTitleColor:[UIColor blackColor]  forState:UIControlStateNormal];
+    [self.DateEndBth setBackgroundColor:[UIColor whiteColor]];
+    [self.DateEndBth addTarget:self action:@selector(TouchEndData:) forControlEvents:UIControlEventTouchUpInside];
+     self.DateEndBth.titleLabel.font = [UIFont systemFontOfSize:15];
+    [self.DateButtonBGView addSubview:self.DateEndBth];
+    
+}
+-(void)initSelectButton
+{
+    float width = self.view.frame.size.width/5-1;
+
+    self.ButtonArray = [NSMutableArray array];
+
+    self.selectButton1 = [[UIButton alloc]initWithFrame:CGRectMake(width*0, 0, width, 33)];
+    [self.selectButton1 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [self.selectButton1 setTitle:@"交易中" forState:UIControlStateNormal];
+         self.selectButton1.titleLabel.font = [UIFont systemFontOfSize:15];
+    [self.selectButton1 setBackgroundColor:[UIColor whiteColor]];
+    self.selectButton1.tag = 0;
+    [self.selectButton1 addTarget:self action:@selector(TouchSelectButton:) forControlEvents:UIControlEventTouchUpInside];
+    [self.ButtonBGView addSubview:self.selectButton1];
+    [self.ButtonArray addObject:self.selectButton1];
+    
+    self.selectButton2 = [[UIButton alloc]initWithFrame:CGRectMake(width*1+1, 0, width, 33)];
+    [self.selectButton2 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+    [self.selectButton2 setTitle:@"未发货" forState:UIControlStateNormal];
+    [self.selectButton2 setBackgroundColor:[UIColor whiteColor]];
+     self.selectButton2.titleLabel.font = [UIFont systemFontOfSize:15];
+    self.selectButton2.tag = 1;
+    [self.selectButton2 addTarget:self action:@selector(TouchSelectButton:) forControlEvents:UIControlEventTouchUpInside];
+    [self.ButtonBGView addSubview:self.selectButton2];
+    [self.ButtonArray addObject:self.selectButton2];
+    
+    self.selectButton3 = [[UIButton alloc]initWithFrame:CGRectMake(width*2+2, 0, width, 33)];
+    [self.selectButton3 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+    [self.selectButton3 setTitle:@"已完成" forState:UIControlStateNormal];
+    [self.selectButton3 setBackgroundColor:[UIColor whiteColor]];
+     self.selectButton3.titleLabel.font = [UIFont systemFontOfSize:15];
+    self.selectButton3.tag = 2;
+    [self.selectButton3 addTarget:self action:@selector(TouchSelectButton:) forControlEvents:UIControlEventTouchUpInside];
+    [self.ButtonBGView addSubview:self.selectButton3];
+    [self.ButtonArray addObject:self.selectButton3];
+    
+    self.selectButton4 = [[UIButton alloc]initWithFrame:CGRectMake(width*3+3, 0, width, 33)];
+    [self.selectButton4 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+    [self.selectButton4 setTitle:@"退款中" forState:UIControlStateNormal];
+    [self.selectButton4 setBackgroundColor:[UIColor whiteColor]];
+     self.selectButton4.titleLabel.font = [UIFont systemFontOfSize:15];
+    self.selectButton4.tag = 3;
+    [self.selectButton4 addTarget:self action:@selector(TouchSelectButton:) forControlEvents:UIControlEventTouchUpInside];
+    [self.ButtonBGView addSubview:self.selectButton4];
+    [self.ButtonArray addObject:self.selectButton4];
+    
+    self.selectButton5 = [[UIButton alloc]initWithFrame:CGRectMake(width*4+4, 0, width, 33)];
+    [self.selectButton5 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+    [self.selectButton5 setTitle:@"已关闭" forState:UIControlStateNormal];
+    [self.selectButton5 setBackgroundColor:[UIColor whiteColor]];
+     self.selectButton5.titleLabel.font = [UIFont systemFontOfSize:15];
+    self.selectButton5.tag = 4;
+    [self.selectButton5 addTarget:self action:@selector(TouchSelectButton:) forControlEvents:UIControlEventTouchUpInside];
+    [self.ButtonBGView addSubview:self.selectButton5];
+    [self.ButtonArray addObject:self.selectButton5];
+
+    
+   
+
+}
+- (void)TouchSelectButton:(UIButton *)button
+{
+    
+    
+    NSLog(@"button:%ld",(long)button.tag);
+    
+    for (int i = 0; i<self.ButtonArray.count; i++) {
+    UIButton * SelectButton  = [self.ButtonArray objectAtIndex:i];
+    [SelectButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+    
+    }
+    
+    [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    
+    switch (button.tag) {
+        case 0:
+            //交易中
+            type = @"1";
+            break;
+        case 1:
+            //未发货
+            type = @"2";
+            break;
+        case 2:
+            //已完成
+            type = @"3";
+            break;
+        case 3:
+            //退货中
+            type = @"4";
+            break;
+        case 4:
+            //已关闭
+            type = @"5";
+            break;
+            
+        default:
+            break;
+    }
+    
+    [self selectDifferentTypeOfList];
+    
+    [self.MyTableView reloadData];
+    
+    
+}
+//点击不同的按钮出现不同的列表
+-(void)selectDifferentTypeOfList
+{
+    
+    
+    _page=1;
+    
+    
+    [HTTPRequestManager getURL:[NSString stringWithFormat:GET_ORDER_API,userid,_page,type] andParameter:nil onCompletion:^(NSDictionary *dict, NSError *error) {
+        
+        if ([type isEqualToString:@"1"])
+        {
+            _currentArray = _presellArray;
+            
+        }else if ([type isEqualToString:@"2"])
+        {
+            _currentArray = _completedArray;
+        }else if ([type isEqualToString:@"3"])
+        {
+            _currentArray = _closedArray;
+        }else if ([type isEqualToString:@"4"])
+        {
+            _currentArray = _waitForAcceptanceArray;
+        }else
+        {
+            _currentArray = _waitForSendArray;
+        }
+        [_currentArray removeAllObjects];
+        [_currentArray addObjectsFromArray:dict[@"result"]];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.MyTableView reloadData];
+        });
+        
+    }];
+    
+    
+}
+
+
+
+
+-(void)SetStartTimteStr:(NSString *)startTimeStr
+{
+    
+    selectStartTime = startTimeStr;
+    
+    [self.DateBth setTitle:[NSString stringWithFormat:@"%@",startTimeStr] forState:UIControlStateNormal];
+}
+- (void)TouchData:(UIButton *)sender {
+    
+    NSLog(@"TouchData");
+    
+    StartTimeViewController *vc = [[StartTimeViewController alloc]init];
+    
+    vc.delegate =self;
+    [self.navigationController pushViewController:vc animated:YES];
+    
+}
+- (void)TouchEndData:(id)sender
+{
+    if (selectStartTime.length ==0) {
+        [self showAlertViewForTitle:@"请选择开始日期" AndMessage:nil];
+    }else{
+        
+        EndTimeViewController * vc = [[EndTimeViewController alloc]init];
+        vc.StartTimeStr = selectStartTime;
+        vc.delegate = self;
+        [self.navigationController pushViewController:vc animated:YES];
+        
+        
+    }
+}
+-(void)SetEndTimeStr:(NSString *)endTimeStr
+{
+    [self.DateEndBth setTitle:[NSString stringWithFormat:@"%@",endTimeStr] forState:UIControlStateNormal];
+    
+    selectEndTime = endTimeStr;
+    
+    NSLog(@"selectEndTime:%@",selectEndTime);
+//    [self UpDaata];
+}
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+    [self initDateButton];
+    [self initSelectButton];
+    _presellArray = [[NSMutableArray alloc]init];
+    _completedArray = [[NSMutableArray alloc]init];
+    _closedArray = [[NSMutableArray alloc]init];
+    _waitForAcceptanceArray = [[NSMutableArray alloc]init];
+    _waitForSendArray = [[NSMutableArray alloc]init];
+    
+
+    
+    
+    
+    self.MyTableView.delegate = self;
+    self.MyTableView.dataSource = self;
+    [self.MyTableView registerNib:[UINib nibWithNibName:@"RushOrdersInfoTableViewCell" bundle:nil] forCellReuseIdentifier:@"orderCell"];
+    [self.MyTableView addHeaderWithTarget:self action:@selector(headerRefresh)];
+    [self.MyTableView addFooterWithTarget:self action:@selector(footerRefresh)];
+    
+    
+    //初始化，一开始的type就是1,并且让currentArray指向第一个array
+    type = @"1";
+    _page=1;
+    userid = [[NSUserDefaults standardUserDefaults]objectForKey:@"userid"];
+    [HTTPRequestManager getURL:[NSString stringWithFormat:GET_ORDER_API,userid,_page,type] andParameter:nil onCompletion:^(NSDictionary *dict, NSError *error) {
+        
+        
+        _presellArray = [dict[@"result"] mutableCopy];
+        _currentArray = _presellArray;
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.MyTableView reloadData];
+        });
+        
+    }];
+    
+    
+    
+    
+
+}
+#pragma mark - Table view data source
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    
+    return _currentArray.count;
+    
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+    
+    
+    static NSString *CellIdentifier = @"orderCell" ;
+    NSDictionary *infoDict = _currentArray[indexPath.row];
+    NSString * orderImg = [[infoDict[@"products"]firstObject]objectForKey:@"productImg"];
+    NSString * createTime = infoDict[@"createTime"];
+    NSNumber * orderID = infoDict[@"orderId"];
+    NSString * orderNo = infoDict[@"orderNo"];
+    NSNumber * price = infoDict[@"price"];
+    
+    
+    RushOrdersInfoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    ;
+    
+    [cell.OrdersImageView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BASE_URL,orderImg]] placeholderImage:nil];
+    cell.orderId = orderID;
+    cell.OrdersLastTime.text = createTime;
+    cell.orderNo = orderNo;
+    cell.OrdersPrice.text = price.stringValue;
+    cell.selectionStyle = UITableViewCellAccessoryNone;
+    cell.layer.shadowColor = [UIColor blackColor].CGColor;
+    cell.layer.shadowOffset = CGSizeMake(1, 1);
+    cell.layer.shadowOpacity = 0.2;
+    cell.delegate=self;
+    
+    if (![type isEqualToString:@"1"])
+    {
+        cell.sendProductButton.hidden=YES;
+    }else{
+        cell.sendProductButton.hidden=NO;
+    }
+    
+    
+    return cell;
+}
+
+- (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 120;
+}
+
+
+
+
+
+
+
+
+#pragma mark - Table view delegate
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSLog(@"Touch %ld",(long)indexPath.row);
+    OrderInfoViewController * vc = [self.storyboard instantiateViewControllerWithIdentifier:@"OrderInfoViewController"];
+    [self.navigationController pushViewController:vc animated:YES];
+}
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+
+
+
+#pragma mark ---------MJRefresh-------
+-(void)headerRefresh
+{
+    _page=1;
+    [HTTPRequestManager getURL:[NSString stringWithFormat:GET_ORDER_API,userid,_page,type] andParameter:nil onCompletion:^(NSDictionary *dict, NSError *error) {
+        [_currentArray removeAllObjects];
+        [_currentArray addObjectsFromArray:dict[@"result"]];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.MyTableView reloadData];
+        });
+    }];
+    
+    [self.MyTableView headerEndRefreshing];
+}
+
+
+
+
+-(void)footerRefresh
+{
+    _page++;
+    [HTTPRequestManager getURL:[NSString stringWithFormat:GET_ORDER_API,userid,_page,type] andParameter:nil onCompletion:^(NSDictionary *dict, NSError *error) {
+        [_currentArray addObjectsFromArray:dict[@"result"]];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.MyTableView reloadData];
+        });
+        
+    }];
+    
+    
+
+    [self.MyTableView footerEndRefreshing];
+
+
+
+}
+
+
+#pragma mark ShowAlertView
+-(void)showAlertViewForTitle:(NSString*)title AndMessage:(NSString*)message
+{
+    UIAlertView * av = [[UIAlertView alloc]initWithTitle:title message:message delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+    
+    [av show];
+}
+
+
+#pragma mark -----OrderTableViewDelegate------
+
+
+-(void)sendMyGoodWithProductID:(NSNumber *)productid
+{
+    
+    
+    NSLog(@"发货");
+    
+    
+    
+}
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+@end

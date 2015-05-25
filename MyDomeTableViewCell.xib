@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6245" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment defaultVersion="1552" identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" rowHeight="170" id="KGk-i7-Jjw" customClass="MyDomeTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="170"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tSx-8w-Lul">
+                        <rect key="frame" x="0.0" y="1" width="320" height="124"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="CellBGView.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="uDu-Sg-SzH">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="124"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="测试产品.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="bGh-M7-4I7">
+                                <rect key="frame" x="8" y="9" width="100" height="109"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="109" id="68H-Hm-cW3"/>
+                                    <constraint firstAttribute="width" constant="100" id="TvE-FL-9Hv"/>
+                                </constraints>
+                            </imageView>
+                            <textView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" showsVerticalScrollIndicator="NO" text="REN SKINCARE 永葆青春紧致柔滑精华液 ,30ml" translatesAutoresizingMaskIntoConstraints="NO" id="BOa-z0-Bte">
+                                <rect key="frame" x="116" y="11" width="196" height="50"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="tT8-V0-N0u"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="¥236.00" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AdB-mg-N5U">
+                                <rect key="frame" x="121" y="60" width="62" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="adG-lO-0x5"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.72941176470588232" green="0.17254901960784313" blue="0.19607843137254902" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="销量9999件   库存9999件" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tw3-If-HJ7">
+                                <rect key="frame" x="121" y="89" width="193" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="6Vw-zB-tuV"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="bGh-M7-4I7" firstAttribute="leading" secondItem="tSx-8w-Lul" secondAttribute="leading" constant="8" id="2Hm-h0-ELo"/>
+                            <constraint firstAttribute="trailing" secondItem="BOa-z0-Bte" secondAttribute="trailing" constant="8" id="37b-tc-inD"/>
+                            <constraint firstItem="bGh-M7-4I7" firstAttribute="top" secondItem="tSx-8w-Lul" secondAttribute="top" constant="9" id="5X4-wG-ZRh"/>
+                            <constraint firstItem="uDu-Sg-SzH" firstAttribute="top" secondItem="tSx-8w-Lul" secondAttribute="top" id="6YJ-0B-Mc2"/>
+                            <constraint firstItem="uDu-Sg-SzH" firstAttribute="leading" secondItem="tSx-8w-Lul" secondAttribute="leading" id="6i6-1X-vZ7"/>
+                            <constraint firstAttribute="height" constant="124" id="Fxy-FU-VhE"/>
+                            <constraint firstAttribute="trailing" secondItem="AdB-mg-N5U" secondAttribute="trailing" constant="137" id="MQF-m6-WyU"/>
+                            <constraint firstItem="AdB-mg-N5U" firstAttribute="top" secondItem="tSx-8w-Lul" secondAttribute="top" constant="60" id="UQt-Ab-joP"/>
+                            <constraint firstItem="Tw3-If-HJ7" firstAttribute="top" secondItem="AdB-mg-N5U" secondAttribute="bottom" constant="8" id="WlN-Op-e3D"/>
+                            <constraint firstItem="BOa-z0-Bte" firstAttribute="top" secondItem="tSx-8w-Lul" secondAttribute="top" constant="11" id="Y37-4r-LdU"/>
+                            <constraint firstAttribute="trailing" secondItem="Tw3-If-HJ7" secondAttribute="trailing" constant="6" id="Z9x-rf-YFf"/>
+                            <constraint firstItem="AdB-mg-N5U" firstAttribute="leading" secondItem="bGh-M7-4I7" secondAttribute="trailing" constant="13" id="ZrZ-bi-dlO"/>
+                            <constraint firstAttribute="bottom" secondItem="uDu-Sg-SzH" secondAttribute="bottom" id="eSU-lD-76K"/>
+                            <constraint firstItem="BOa-z0-Bte" firstAttribute="leading" secondItem="bGh-M7-4I7" secondAttribute="trailing" constant="8" id="lqX-UG-MNa"/>
+                            <constraint firstItem="Tw3-If-HJ7" firstAttribute="leading" secondItem="bGh-M7-4I7" secondAttribute="trailing" constant="13" id="nXu-9g-x3Q"/>
+                            <constraint firstAttribute="trailing" secondItem="uDu-Sg-SzH" secondAttribute="trailing" id="sdA-Mk-BxY"/>
+                        </constraints>
+                    </view>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BJw-kd-ga9">
+                        <rect key="frame" x="0.0" y="126" width="320" height="34"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="34" id="dbJ-WE-3F3"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="tSx-8w-Lul" secondAttribute="trailing" id="4W1-jw-RcG"/>
+                    <constraint firstItem="tSx-8w-Lul" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="GYu-uJ-HBs"/>
+                    <constraint firstItem="BJw-kd-ga9" firstAttribute="top" secondItem="tSx-8w-Lul" secondAttribute="bottom" constant="1" id="MdU-eE-Qwl"/>
+                    <constraint firstAttribute="trailing" secondItem="BJw-kd-ga9" secondAttribute="trailing" id="Rcp-hi-JMa"/>
+                    <constraint firstItem="BJw-kd-ga9" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="fch-RY-qPe"/>
+                    <constraint firstItem="tSx-8w-Lul" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="1" id="orB-iA-OI1"/>
+                </constraints>
+            </tableViewCellContentView>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            <connections>
+                <outlet property="ButtonView" destination="BJw-kd-ga9" id="Y9f-Lm-cCf"/>
+            </connections>
+            <point key="canvasLocation" x="196" y="327"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="CellBGView.jpg" width="640" height="75"/>
+        <image name="测试产品.jpg" width="140" height="140"/>
+    </resources>
+</document>

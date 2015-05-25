@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="oftenExpressAbc">常用快递</string>
+
+    <string-array name="express_abc">
+        <item>A</item>
+        <item>B</item>
+        <item>C</item>
+        <item>D</item>
+        <item>E</item>
+        <item>F</item>
+        <item>G</item>
+        <item>H</item>
+        <item>J</item>
+        <item>K</item>
+        <item>L</item>
+        <item>M</item>
+        <item>O</item>
+        <item>Q</item>
+        <item>R</item>
+        <item>S</item>
+        <item>T</item>
+        <item>U</item>
+        <item>W</item>
+        <item>X</item>
+        <item>Y</item>
+        <item>Z</item>
+    </string-array>
+    <string-array name="express_name">
+        <item>EMS,申通快递,顺丰速运,圆通速递,韵达快运,中通快递,汇通快运,天天快递,宅急送,邮政国内包裹,邮政国际包裹,EMS国际快递</item>
+        <item>AAE-中国,安捷快递,安信达  </item>
+        <item> 包裹/平邮/挂号信,BHT国际快递,百福东方    </item>
+        <item>CCES（希伊艾斯）,成都立即送</item>
+        <item>DHL,DHL德国,D速物流,德邦物流,大田物流,DPEX,递四方</item>
+        <item>EMS-国内,EMS-国际,E邮宝</item>
+        <item>凡客,FedEx-美国,FedEx-国际,FedEx-国内,飞康达    </item>
+        <item>挂号信,能达速递,共速达,GLS</item>
+        <item>海航天天,汇通快运,华宇物流,恒路物流,海外环球,华夏龙    </item>
+        <item>佳吉快运,嘉里大通,佳怡物流,京广速递,金大物流,晋越快递,急先达,加运美</item>
+        <item>快捷速递</item>
+        <item>联邦快递,龙邦速递,蓝镖快递,立即送,乐捷递,联昊通</item>
+        <item>民航快递,美国快递,门对门</item>
+        <item>OCS</item>
+        <item>全峰快递,全一快递,全晨快递,全际通,全日通</item>
+        <item>如风达</item>
+        <item>申通E物流,申通快递,顺丰速运,速尔快递,盛辉物流,盛丰物流,上大国际,三态速递,山东海红,赛澳递</item>
+        <item>TNT,天天快递,天地华宇,通和天下</item>
+        <item>UPS,USPS（美国邮政）</item>
+        <item>万家物流,万象物流,微特派</item>
+        <item>鑫飞鸿,新邦物流,信丰物流,希伊艾斯（CCES）</item>
+        <item>圆通速递,韵达快运,邮政国内包裹,邮政国际包裹,邮政特快专递,远成物流,亚风速递,源伟丰,优速快递,元智捷诚,越丰物流,源安达,原飞航,银捷速递,运通中港</item>
+        <item>宅急送,中通快递,中铁快运,中铁物流,中邮物流,芝麻开门,忠信达,郑州建华</item>
+    </string-array>
+
+</resources>

@@ -1,0 +1,55 @@
+//
+//  RegisterViewController.m
+//  DoShop
+//
+//  Created by Anson on 15/2/11.
+//  Copyright (c) 2015年 Anson Tsang. All rights reserved.
+//
+
+#import "RegisterViewController.h"
+
+@interface RegisterViewController ()
+@property (weak, nonatomic) IBOutlet UITextField *phoneNumTextfield;
+@property (weak, nonatomic) IBOutlet UITextField *AuthCodeTextfield;
+@property (weak, nonatomic) IBOutlet UITextField *passwordTextfield;
+@property (weak, nonatomic) IBOutlet UITextField *passwordConfirmTextfield;
+@property (weak, nonatomic) IBOutlet UITextField *storeIDTextfield;
+@property (weak, nonatomic) IBOutlet UIButton *getAuthoCodeButton;
+@property (weak, nonatomic) IBOutlet UIButton *RegisterButton;
+
+@end
+
+@implementation RegisterViewController
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    self.navigationController.navigationBar.hidden=NO;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+    
+    
+    
+    
+    
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+@end

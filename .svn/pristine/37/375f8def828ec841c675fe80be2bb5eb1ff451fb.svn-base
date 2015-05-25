@@ -1,0 +1,125 @@
+//
+//  HTTPRequestManager.m
+//  DoShop
+//
+//  Created by Anson on 15/2/4.
+//  Copyright (c) 2015年 Anson Tsang. All rights reserved.
+//
+
+#import "HTTPRequestManager.h"
+
+
+
+
+@implementation HTTPRequestManager
+static HTTPRequestManager * manager = nil;
+static dispatch_once_t onceToken;
+typedef void(^responseBlock)(NSDictionary* dict, NSError *error);
+
+
+/**
+ *  创建请求单例
+ *
+ *  @return 单例
+ */
++(instancetype)sharedManager
+{
+    dispatch_once(&onceToken, ^{
+        manager = [[self alloc]initWithBaseURL:[NSURL URLWithString:@""]];
+        manager.responseSerializer = [AFJSONResponseSerializer serializer];
+        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
+        manager.requestSerializer.timeoutInterval = 10;
+        [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+            NSLog(@"Reachability: %@", AFStringFromNetworkReachabilityStatus(status));
+            if (![AFNetworkReachabilityManager sharedManager].isReachable) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"网络不可用"
+                                                                message:@"请检查网络连接！"
+                                                               delegate:nil
+                                                      cancelButtonTitle:nil
+                                                      otherButtonTitles:@"确定", nil];
+                [alert show];
+            }
+        }];
+        
+    });
+    
+    
+    return manager;
+}
+
+
+
+/**
+ *  封装的Post方法
+ *
+ *  @param url             接口URL
+ *  @param param           接口字典参数
+ *  @param completionBlock 成功的回调方法
+ *
+ *  @return 返回一个成功的执行的 AFHTTPRequestOperation类
+ */
++(AFHTTPRequestOperation*)postURL:(NSString*)url andParameter:(NSDictionary*)param onCompletion:(responseBlock)completionBlock
+{
+    
+    manager = [self sharedManager];
+    return [manager POST:url parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"%@",responseObject);
+
+        if (responseObject && completionBlock)
+        {
+            completionBlock(responseObject,nil);
+        }
+            
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@",error);
+
+        if (completionBlock)
+        {
+            completionBlock(nil,error);
+        }
+    }];
+    
+    
+}
+
+
+/**
+ *  封装的Post方法
+ *
+ *  @param url             接口URL
+ *  @param param           接口字典参数
+ *  @param completionBlock 成功的回调方法
+ *
+ *  @return 返回一个成功的执行的 AFHTTPRequestOperation类
+ */
+
+
++(AFHTTPRequestOperation*)getURL:(NSString*)url andParameter:(NSDictionary*)param onCompletion:(responseBlock)completionBlock
+{
+    manager = [self sharedManager];
+    return [manager GET:url parameters:param success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"%@",responseObject);
+        if (responseObject && completionBlock)
+        {
+            completionBlock(responseObject,nil);
+        }
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@",error);
+        if (completionBlock)
+        {
+            completionBlock(nil,error);
+        }
+    }];
+    
+    
+}
+
+
+
+
+
+
+
+
+@end
