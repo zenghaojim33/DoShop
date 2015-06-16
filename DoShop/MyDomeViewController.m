@@ -272,7 +272,7 @@ static NSString *CellIdentifier = @"MyGoodCell" ;
         [UMSocialData defaultData].extConfig.wechatTimelineData.url = link;
         
         //如果得到分享完成回调，需要设置delegate为self
-        [UMSocialSnsService presentSnsIconSheetView:self appKey:@"54a350bffd98c51f0900012d" shareText:shareText shareImage:shareImage shareToSnsNames:@[UMShareToWechatSession,UMShareToWechatTimeline] delegate:self];
+        [UMSocialSnsService presentSnsIconSheetView:self appKey:@"54a350bffd98c51f0900012d" shareText:shareText shareImage:shareImage shareToSnsNames:@[UMShareToSina,UMShareToWechatSession,UMShareToWechatTimeline,UMShareToWechatFavorite,UMShareToTencent,UMShareToQQ,UMShareToQzone,UMShareToEmail,UMShareToSms] delegate:self];
         
     }else{
         UIAlertView * av = [[UIAlertView alloc]initWithTitle:@"你的设备尚未安装微信" message:@"暂时无法使用分享功能" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"前往下载", nil];
@@ -394,7 +394,7 @@ static NSString *CellIdentifier = @"MyGoodCell" ;
         [UMSocialData defaultData].extConfig.wechatTimelineData.url = link;
         
         //如果得到分享完成回调，需要设置delegate为self
-        [UMSocialSnsService presentSnsIconSheetView:self appKey:UMAppKey shareText:productName shareImage:shareImage shareToSnsNames:@[UMShareToWechatSession,UMShareToWechatTimeline] delegate:self];
+        [UMSocialSnsService presentSnsIconSheetView:self appKey:UMAppKey shareText:productName shareImage:shareImage shareToSnsNames:@[UMShareToSina,UMShareToWechatSession,UMShareToWechatTimeline,UMShareToWechatFavorite,UMShareToTencent,UMShareToQQ,UMShareToQzone,UMShareToEmail,UMShareToSms] delegate:self];
         
     }else{
         UIAlertView * av = [[UIAlertView alloc]initWithTitle:@"你的设备尚未安装微信" message:@"暂时无法使用分享功能" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"前往下载", nil];
